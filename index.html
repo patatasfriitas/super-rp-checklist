@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Super RP — Checklist</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0900;
+  --bg2:#100e00;
+  --bg3:#1a1600;
+  --bg4:#221e00;
+  --accent:#d4a017;
+  --accent2:#f5c842;
+  --border:#d4a01714;
+  --border2:#d4a01730;
+  --text:#f5f0e0;
+  --muted:#8a7a50;
+  --font:'Rajdhani',sans-serif;
+  --mono:'Share Tech Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0
+}
+.wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:2rem 1.5rem 4rem}
+
+/* Connection status */
+.conn-bar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:6px;font-family:var(--mono);font-size:11px;letter-spacing:2px;
+  text-transform:uppercase;transition:all .3s
+}
+.conn-bar.connecting{background:#1a1200;color:var(--muted)}
+.conn-bar.online{background:#0a1200;color:#7dcc50}
+.conn-bar.offline{background:#1a0000;color:#cc5050}
+.conn-dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Who's online */
+.online-bar{
+  background:var(--bg3);border:1px solid var(--border2);
+  padding:.6rem 1rem;margin-bottom:1.2rem;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap
+}
+.online-label{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.avatars{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.avatar{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;border:2px solid var(--accent);
+  background:var(--bg4);color:var(--accent2);font-family:var(--mono);
+  position:relative
+}
+.avatar[data-you="true"]::after{
+  content:'tú';position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);
+  font-size:9px;color:var(--accent);white-space:nowrap
+}
+.name-setup{
+  background:var(--bg3);border:1px solid var(--border2);
+  padding:1.5rem;text-align:center;margin-bottom:1.5rem
+}
+.name-setup p{font-size:14px;color:var(--muted);margin-bottom:1rem;font-family:var(--mono)}
+.name-input-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.name-input{
+  background:var(--bg4);border:1px solid var(--border2);color:var(--text);
+  font-family:var(--mono);font-size:14px;padding:8px 14px;outline:none;width:200px
+}
+.name-input:focus{border-color:var(--accent)}
+.name-btn{
+  background:var(--accent);border:none;color:#0a0900;
+  font-family:var(--font);font-size:14px;font-weight:700;
+  padding:8px 20px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;
+  transition:background .2s
+}
+.name-btn:hover{background:var(--accent2)}
+
+/* Activity feed */
+.feed{
+  background:var(--bg2);border:1px solid var(--border);
+  max-height:120px;overflow-y:auto;margin-bottom:1.2rem;
+  padding:.5rem .75rem
+}
+.feed-item{
+  font-family:var(--mono);font-size:11px;color:var(--muted);
+  padding:3px 0;border-bottom:1px solid var(--border);line-height:1.4
+}
+.feed-item:last-child{border-bottom:none}
+.feed-item .who{color:var(--accent2)}
+.feed-item .action-done{color:#7dcc50}
+.feed-item .action-undo{color:#cc7050}
+.feed-empty{font-family:var(--mono);font-size:11px;color:var(--border2);padding:4px 0;text-align:center}
+
+/* Header */
+.header{text-align:center;margin-bottom:2rem;padding:2rem 0 1rem}
+.header-tag{font-family:var(--mono);font-size:12px;color:var(--accent2);letter-spacing:3px;text-transform:uppercase;margin-bottom:.75rem;opacity:.8}
+.header h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:700;letter-spacing:2px;text-transform:uppercase;line-height:1}
+.header h1 span{color:var(--accent)}
+.header-sub{font-size:15px;color:var(--muted);margin-top:.75rem;font-weight:400}
+.scanline{height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:1.5rem 0;opacity:.4}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
+.stat{background:var(--bg3);border:1px solid var(--border2);border-top:2px solid var(--accent);padding:1rem;text-align:center}
+.stat-n{font-size:2rem;font-weight:700;color:var(--accent);font-family:var(--mono);line-height:1}
+.stat-l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:4px}
+.global-prog{margin-bottom:1.5rem}
+.prog-label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:6px}
+.prog-track{height:6px;background:var(--bg4);border:1px solid var(--border)}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .5s cubic-bezier(.4,0,.2,1);width:0%}
+
+/* Filters */
+.toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1rem}
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.filt-btn{
+  background:transparent;border:1px solid var(--border2);
+  color:var(--muted);font-family:var(--font);font-size:13px;font-weight:600;
+  padding:6px 16px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s
+}
+.filt-btn:hover{border-color:var(--accent);color:var(--text)}
+.filt-btn.active{border-color:var(--accent);color:var(--accent);background:var(--bg3)}
+.reset-btn{
+  background:transparent;border:1px solid #ff334422;color:#ff3344;
+  font-family:var(--font);font-size:12px;font-weight:600;letter-spacing:2px;
+  text-transform:uppercase;padding:6px 16px;cursor:pointer;transition:all .2s
+}
+.reset-btn:hover{background:#ff334411;border-color:#ff334488}
+
+/* Categories */
+.cat{margin-bottom:1rem;border:1px solid var(--border)}
+.cat-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.85rem 1.2rem;background:var(--bg2);cursor:pointer;
+  border-left:3px solid var(--cat-color,var(--accent));transition:background .2s;gap:12px
+}
+.cat-head:hover{background:var(--bg3)}
+.cat-icon{font-size:1.1rem;width:24px;text-align:center;flex-shrink:0}
+.cat-name{font-size:15px;font-weight:700;letter-spacing:1px;text-transform:uppercase;flex:1}
+.cat-right{display:flex;align-items:center;gap:12px}
+.cat-count{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.cat-count.complete{color:var(--accent2)}
+.cat-arrow{font-size:12px;color:var(--muted);transition:transform .3s}
+.cat.open .cat-arrow{transform:rotate(180deg)}
+.cat-pbar{height:3px;background:var(--bg4)}
+.cat-pfill{height:100%;transition:width .4s;background:var(--cat-color,var(--accent));opacity:.7;width:0%}
+.items{display:none}
+.cat.open .items{display:block}
+.item{
+  display:flex;align-items:flex-start;gap:12px;padding:.7rem 1.2rem;
+  border-top:1px solid var(--border);cursor:pointer;transition:background .15s;
+  border-left:3px solid transparent;position:relative
+}
+.item:hover{background:var(--bg3);border-left-color:var(--cat-color,var(--accent))}
+.item.done{opacity:.65}
+.item.done .itxt{text-decoration:line-through;color:var(--muted)}
+.cb{
+  width:20px;height:20px;border:1px solid var(--border2);flex-shrink:0;margin-top:1px;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;background:var(--bg4)
+}
+.cb.chk{background:var(--cat-color,var(--accent));border-color:var(--cat-color,var(--accent))}
+.cb svg{opacity:0;transition:opacity .2s}
+.cb.chk svg{opacity:1}
+.itxt{font-size:14px;font-weight:600;letter-spacing:.3px;line-height:1.4;flex:1}
+.isub{font-size:12px;color:var(--muted);margin-top:3px;font-weight:400;font-family:var(--mono)}
+.item-who{font-family:var(--mono);font-size:10px;color:var(--accent);margin-top:3px}
+
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2)}
+
+/* Pulse animation for live updates */
+@keyframes pulse{0%{opacity:1}50%{opacity:.4}100%{opacity:1}}
+.item.updating{animation:pulse .4s ease}
+</style>
+</head>
+<body>
+
+<div class="conn-bar connecting" id="conn-bar">
+  <div class="conn-dot"></div>
+  <span id="conn-txt">CONECTANDO...</span>
+</div>
+
+<div class="wrap" style="margin-top:2.5rem">
+
+  <div class="header">
+    <div class="header-tag">// Sistema de QA Multijugador //</div>
+    <h1>Super <span>RP</span></h1>
+    <p class="header-sub">Checklist colaborativa en tiempo real</p>
+  </div>
+
+  <div class="scanline"></div>
+
+  <!-- Name setup -->
+  <div class="name-setup" id="name-setup">
+    <p>// IDENTIFÍCATE PARA CONTINUAR //</p>
+    <div class="name-input-row">
+      <input class="name-input" id="name-input" type="text" placeholder="Tu nombre / nick" maxlength="16">
+      <button class="name-btn" id="name-btn">ENTRAR</button>
+    </div>
+  </div>
+
+  <!-- Who's online -->
+  <div class="online-bar" id="online-bar" style="display:none">
+    <span class="online-label">Online:</span>
+    <div class="avatars" id="avatars"></div>
+  </div>
+
+  <!-- Activity feed -->
+  <div class="feed" id="feed">
+    <div class="feed-empty">— Sin actividad reciente —</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n" id="s-total">0</div><div class="stat-l">Total</div></div>
+    <div class="stat"><div class="stat-n" id="s-done">0</div><div class="stat-l">Completadas</div></div>
+    <div class="stat"><div class="stat-n" id="s-pct">0%</div><div class="stat-l">Progreso</div></div>
+    <div class="stat"><div class="stat-n" id="s-left">0</div><div class="stat-l">Pendientes</div></div>
+  </div>
+
+  <div class="global-prog">
+    <div class="prog-label"><span>PROGRESO GLOBAL</span><span id="prog-txt">0 / 0</span></div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="filters">
+      <button class="filt-btn active" data-f="all">Todas</button>
+      <button class="filt-btn" data-f="pending">Pendientes</button>
+      <button class="filt-btn" data-f="done">Completadas</button>
+    </div>
+    <button class="reset-btn" id="reset-btn">↺ Reiniciar todo</button>
+  </div>
+
+  <div id="cats"></div>
+</div>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+// ============================================================
+// ⚠️  RELLENA AQUÍ TU CONFIGURACIÓN DE FIREBASE
+// ============================================================
+const firebaseConfig = {
+  apiKey:            "AIzaSyBdgeZyEZVCRtCm_KhpkCh7GjzAmRdAVDo",
+  authDomain:        "super-rp-checklist-b98b6.firebaseapp.com",
+  databaseURL:       "https://super-rp-checklist-b98b6-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:         "super-rp-checklist-b98b6",
+  storageBucket:     "super-rp-checklist-b98b6.firebasestorage.app",
+  messagingSenderId: "1046544843978",
+  appId:             "1:1046544843978:web:87c182a2a52cfde110a033"
+};
+// ============================================================
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const CATS=[
+  {id:"economia",icon:"💰",label:"Economía & Trabajos",color:"#d4a017",items:[
+    {t:"Trabajos legales",s:"df_multijob / jobs_creator — Asignación, salario y animaciones"},
+    {t:"Contratos de trabajo",s:"kq_jobcontracts — Crear y aceptar contrato entre jugadores"},
+    {t:"Tiendas y cobros",s:"df_shopscreator / billing_ui — Comprar items y pagar facturas"},
+    {t:"Banco y cajeros",s:"df_banking / cfx-fm-fleeca-banks-v2 — Ingresar, retirar, transferir"},
+    {t:"Casa de empeño",s:"qb-pawnshop / map4all-pawnshop — Vender objetos al pawnshop"},
+    {t:"Alquiler de vehículos",s:"df_rentalcreator — Alquilar y devolver vehículo correctamente"},
+    {t:"Economía ilegal",s:"origen_ilegalv2 / plt_drugs — Flujo completo de dinero ilegal"},
+    {t:"Lotería",s:"qs-lottery-creator / lottery_machine — Comprar boleto y comprobar resultado"},
+    {t:"Trabajo de taxi",s:"gg_taxijob — Completar carrera con pago correcto"},
+    {t:"Lavado de coches",s:"kq_powerwashing / kq_powerwashing_mlo — Minijuego y cobro"},
+  ]},
+  {id:"vehiculos",icon:"🚗",label:"Vehículos & Garajes",color:"#f5c842",items:[
+    {t:"Garajes avanzados",s:"qs-advancedgarages — Guardar, sacar y pagar impound"},
+    {t:"Llaves de vehículo",s:"qb-carkeys / qb-vehiclekeys — Dar/quitar llave, robar vehículo"},
+    {t:"Kilometraje",s:"jg-vehiclemileage — Verificar que aumenta con el uso"},
+    {t:"Personalización LsCustoms",s:"LsCustoms — Pintura, motor, ruedas, placa personalizada"},
+    {t:"Deformación de vehículo",s:"VehicleDeformation — Choque y revisión de daños persistentes"},
+    {t:"Remolque (flatbed)",s:"qs-flatbed — Enganchar y remolcar vehículo correctamente"},
+    {t:"Carwash",s:"ds4l-carwash / luky3d_carwash — Lavar y cobro correcto"},
+    {t:"Mecánico",s:"jg-mechanic / jg-mechanic-props — Reparar vehículo y cobrar en taller"},
+    {t:"Tunning de puertas",s:"prompt_doortuning — Tunear puertas en taller específico"},
+    {t:"Concesionario",s:"ZSX_DEALERSHIP / cfx_prompt_mosley_dealership — Comprar y recibir en garaje"},
+  ]},
+  {id:"housing",icon:"🏠",label:"Vivienda & Propiedades",color:"#c8922a",items:[
+    {t:"Sistema de housing",s:"origen_housing / origen_housing_assets — Comprar, amueblar y acceder"},
+    {t:"Apartamento inicial",s:"lev_apartment — Spawn en apartamento, salir y entrar"},
+    {t:"Cerraduras de puertas",s:"ox_doorlock — Bloquear/desbloquear puertas de negocios y casas"},
+    {t:"Interiores MLO flats",s:"cfx_prompt_flats_* — Entrar y explorar interiores sin bugs"},
+    {t:"Interiores MLO varios",s:"cfx_prompt_gang_hideout_* / prison — Acceder sin errores"},
+  ]},
+  {id:"policia",icon:"🚔",label:"Policía & Emergencias",color:"#e8d5a0",items:[
+    {t:"MDT policial",s:"plt_mdt / plt_cad — Crear ficha, buscar placa, registrar arresto"},
+    {t:"Departamentos",s:"plt_departments — Verificar rangos y permisos por departamento"},
+    {t:"Sirenas y luces",s:"plt_sirens — Activar sirena y verificar sonido sincronizado"},
+    {t:"Esposas / arresto",s:"LAPD-BAGDE — Esposar, cachear y trasladar sospechoso"},
+    {t:"Armería PD",s:"pd-safe — Acceder y usar armería policial correctamente"},
+    {t:"Bombero",s:"Picke-firefighter — Apagar incendio con equipo completo"},
+    {t:"Hospital / revivir",s:"df_hospital — Morir, ir al hospital y ser revivido"},
+    {t:"Estación de revivir",s:"df_revivestation — Autoreanimación si está configurada"},
+    {t:"Documentos",s:"k5_documents — Pedir y mostrar documentos a policía"},
+    {t:"Placas de vehículo",s:"placas — Crear y verificar placa personalizada"},
+  ]},
+  {id:"crimen",icon:"💀",label:"Crimen & Robos",color:"#b8860b",items:[
+    {t:"Robo Fleeca",s:"cfx-fm-fleeca-banks-v2 — Hack, robo y escape completo"},
+    {t:"Túnel de escape",s:"cfx_prompt_Escape_Tunnel — Usar túnel tras robo"},
+    {t:"Vender botín",s:"qb-pawnshop — Vender objetos robados correctamente"},
+    {t:"Safecracker",s:"safecracker — Abrir caja fuerte con minijuego sin bugs"},
+    {t:"Stash de banda",s:"cfx_prompt_gang_hideout_* — Acceder y usar stash de banda"},
+    {t:"Importaciones ilegales",s:"origen_importheist — Flujo completo de robo de importación"},
+    {t:"Mecánica de rehenes",s:"origen_hostage — Secuestro y negociación con policía"},
+    {t:"Munición ilegal",s:"prompt_ammunation_rework — Comprar armas y revisar stock"},
+  ]},
+  {id:"social",icon:"💬",label:"Social & Roleplay",color:"#d4a017",items:[
+    {t:"Teléfono",s:"lb-phone — Llamar, SMS, apps (banco, contactos, fotos)"},
+    {t:"HUD e inventario",s:"origen_hud / origen_inventory — Stats, peso y organización de items"},
+    {t:"Creación de personaje",s:"illenium-appearance — Editar personaje completo sin bugs"},
+    {t:"Animaciones",s:"prompt_anim_core_2_new — Reproducir emotes en entorno social"},
+    {t:"Chat y notificaciones",s:"origen_notify / origen_chat — Mensajes emergentes correctos"},
+    {t:"Sistema de voz",s:"pma-voice — Proximidad y radio policial/civil"},
+    {t:"Misiones y tienda",s:"origen_quests_store — Aceptar misión y completarla"},
+    {t:"Radio",s:"cgtyradio — Sintonizar emisora y escuchar audio"},
+    {t:"TV en local",s:"tgg-remotetv — Encender TV y cambiar canal"},
+    {t:"Pesca",s:"cgtyfishing / rtx_wateractivities — Pescar y vender capturas"},
+  ]},
+  {id:"minijuegos",icon:"🎮",label:"Minijuegos & Actividades",color:"#f5c842",items:[
+    {t:"Casino completo",s:"rcore_casino / rcore_casino_interior — Ruleta, tragaperras, blackjack"},
+    {t:"Bowling",s:"rtx_bowling / rtx_bowling_mlos — Partida completa sin errores"},
+    {t:"Billar",s:"rcore_pool — Partida multijugador de billar"},
+    {t:"Parque acuático",s:"rtx_waterpark — Atracciones sin crashes"},
+    {t:"Minijuegos varios",s:"bd-minigames / Buty-Minigames / ran-minigames — Probar 3+ tipos"},
+    {t:"RC y go-karts",s:"rc-sitanywhere — Conducir RC y verificar controles"},
+    {t:"Tatuajes",s:"rcore_tattoos — Aplicar tatuaje sin bugs"},
+  ]},
+  {id:"infra",icon:"🖥️",label:"Infraestructura & Admin",color:"#a89060",items:[
+    {t:"Cola de conexión",s:"connectqueue — Desconectar y volver con cola activa"},
+    {t:"Loading screen",s:"rsd_loadingscreen — Pantalla de carga y música sin errores"},
+    {t:"Panel de admin",s:"df_admin — Bans, kicks, noclip, spectate sin errores"},
+    {t:"Base de datos",s:"oxmysql — Sin errores SQL en consola del servidor"},
+    {t:"Mapas e IPLs",s:"cfx_prompt_sandy_mapdata / fiv3devs_mapdata — MLOs cargan bien"},
+    {t:"Spawn inicial",s:"qb-spawn — Seleccionar punto de spawn al conectar"},
+    {t:"Freecam / screenshot",s:"fivem-freecam / screenshot-basic — Funcionales sin bugs"},
+    {t:"Monitor de recursos",s:"monitor — Ningún resource supera 5ms de forma sostenida"},
+  ]},
+];
+
+// State
+let myName = localStorage.getItem("rp_name") || "";
+let myId = localStorage.getItem("rp_uid") || ("u_"+Math.random().toString(36).slice(2,9));
+localStorage.setItem("rp_uid", myId);
+let state = {};
+let onlineUsers = {};
+let filter = "all";
+let openCats = new Set(CATS.map(c=>c.id));
+let feedItems = [];
+let isSetup = !myName;
+
+// Firebase refs
+const checkRef  = db.ref("checks");
+const usersRef  = db.ref("presence");
+const feedRef   = db.ref("feed");
+
+// Connection status
+db.ref(".info/connected").on("value", snap => {
+  const bar = document.getElementById("conn-bar");
+  const txt = document.getElementById("conn-txt");
+  if(snap.val()){
+    bar.className = "conn-bar online";
+    txt.textContent = "SINCRONIZADO EN TIEMPO REAL";
+    if(myName) registerPresence();
+  } else {
+    bar.className = "conn-bar offline";
+    txt.textContent = "SIN CONEXIÓN — REINTENTANDO...";
+  }
+});
+
+function registerPresence(){
+  const ref = usersRef.child(myId);
+  ref.set({name: myName, id: myId, t: Date.now()});
+  ref.onDisconnect().remove();
+}
+
+function initName(){
+  const setup = document.getElementById("name-setup");
+  const onlineBar = document.getElementById("online-bar");
+  if(!isSetup){
+    setup.style.display = "none";
+    onlineBar.style.display = "flex";
+    registerPresence();
+    startListeners();
+  }
+  document.getElementById("name-btn").addEventListener("click", submitName);
+  document.getElementById("name-input").addEventListener("keydown", e=>{ if(e.key==="Enter") submitName(); });
+}
+
+function submitName(){
+  const val = document.getElementById("name-input").value.trim();
+  if(!val) return;
+  myName = val;
+  localStorage.setItem("rp_name", myName);
+  isSetup = false;
+  document.getElementById("name-setup").style.display = "none";
+  document.getElementById("online-bar").style.display = "flex";
+  registerPresence();
+  startListeners();
+}
+
+function startListeners(){
+  // Listen to checks
+  checkRef.on("value", snap => {
+    state = snap.val() || {};
+    render();
+  });
+
+  // Listen to presence
+  usersRef.on("value", snap => {
+    onlineUsers = snap.val() || {};
+    renderAvatars();
+  });
+
+  // Listen to feed
+  feedRef.limitToLast(20).on("value", snap => {
+    const data = snap.val() || {};
+    feedItems = Object.values(data).sort((a,b)=>b.t-a.t);
+    renderFeed();
+  });
+}
+
+function toggleItem(k, label){
+  const cur = !!(state[k] && state[k].done);
+  const newVal = !cur;
+  checkRef.child(k).set(newVal ? {done:true, who:myName, t:Date.now()} : null);
+  // Add to feed
+  feedRef.push({
+    who: myName,
+    label: label,
+    done: newVal,
+    t: Date.now()
+  });
+  // Trim feed to last 50
+  feedRef.once("value", snap => {
+    const keys = Object.keys(snap.val()||{});
+    if(keys.length > 50){
+      keys.slice(0, keys.length-50).forEach(k => feedRef.child(k).remove());
+    }
+  });
+}
+
+function resetAll(){
+  if(!confirm("¿Reiniciar todas las pruebas? Esto afecta a TODOS los usuarios.")) return;
+  checkRef.set(null);
+  feedRef.push({who:myName, label:"⚠️ REINICIO COMPLETO", done:false, t:Date.now(), reset:true});
+}
+
+function renderAvatars(){
+  const wrap = document.getElementById("avatars");
+  wrap.innerHTML = "";
+  Object.values(onlineUsers).forEach(u => {
+    const div = document.createElement("div");
+    div.className = "avatar";
+    div.setAttribute("data-you", u.id === myId ? "true":"false");
+    div.title = u.name;
+    div.textContent = u.name.slice(0,2).toUpperCase();
+    wrap.appendChild(div);
+  });
+}
+
+function renderFeed(){
+  const feed = document.getElementById("feed");
+  if(!feedItems.length){feed.innerHTML='<div class="feed-empty">— Sin actividad reciente —</div>';return;}
+  feed.innerHTML = feedItems.slice(0,15).map(f=>{
+    const time = new Date(f.t).toLocaleTimeString("es",{hour:"2-digit",minute:"2-digit"});
+    if(f.reset) return `<div class="feed-item">[${time}] <span class="who">${f.who}</span> reinició toda la checklist</div>`;
+    const cls = f.done?"action-done":"action-undo";
+    const verb = f.done?"✓ completó":"↩ desmarcó";
+    return `<div class="feed-item">[${time}] <span class="who">${f.who}</span> <span class="${cls}">${verb}</span>: ${f.label}</div>`;
+  }).join("");
+}
+
+function updateStats(){
+  let total=0, done=0;
+  CATS.forEach(c=>c.items.forEach(i=>{
+    total++;
+    if(state[c.id+"__"+i.t.replace(/\s/g,"_")] && state[c.id+"__"+i.t.replace(/\s/g,"_")].done) done++;
+  }));
+  document.getElementById("s-total").textContent=total;
+  document.getElementById("s-done").textContent=done;
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById("s-pct").textContent=pct+"%";
+  document.getElementById("s-left").textContent=total-done;
+  document.getElementById("prog-fill").style.width=pct+"%";
+  document.getElementById("prog-txt").textContent=done+" / "+total;
+}
+
+function getKey(catId, itemT){
+  return catId+"__"+itemT.replace(/[\s\/\.\(\)\*]/g,"_");
+}
+
+function render(){
+  const wrap = document.getElementById("cats");
+  wrap.innerHTML = "";
+  CATS.forEach(cat=>{
+    const total = cat.items.length;
+    const done = cat.items.filter(i=>{ const k=getKey(cat.id,i.t); return state[k]&&state[k].done; }).length;
+    const pct = Math.round(done/total*100);
+    const visible = cat.items.filter(i=>{
+      const d = !!(state[getKey(cat.id,i.t)]&&state[getKey(cat.id,i.t)].done);
+      return filter==="all"||(filter==="done"&&d)||(filter==="pending"&&!d);
+    });
+    if(visible.length===0) return;
+    const isOpen = openCats.has(cat.id);
+    const div = document.createElement("div");
+    div.className = "cat"+(isOpen?" open":"");
+    div.style.setProperty("--cat-color",cat.color);
+    div.innerHTML=`<div class="cat-head" data-cat="${cat.id}">
+      <span class="cat-icon">${cat.icon}</span>
+      <span class="cat-name">${cat.label}</span>
+      <div class="cat-right">
+        <span class="cat-count${done===total?" complete":""}">${done}/${total} (${pct}%)</span>
+        <span class="cat-arrow">▼</span>
+      </div>
+    </div>
+    <div class="cat-pbar"><div class="cat-pfill" style="width:${pct}%"></div></div>
+    <div class="items">${visible.map(i=>{
+      const k = getKey(cat.id,i.t);
+      const entry = state[k];
+      const chk = !!(entry&&entry.done);
+      const who = entry&&entry.who ? entry.who : "";
+      return `<div class="item${chk?" done":""}" data-k="${k}" data-label="${i.t}">
+        <div class="cb${chk?" chk":""}">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 6L5 9L10 3" stroke="#0a0900" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div style="flex:1">
+          <div class="itxt">${i.t}</div>
+          <div class="isub">${i.s}</div>
+          ${who?`<div class="item-who">✓ ${who}</div>`:""}
+        </div>
+      </div>`;
+    }).join("")}</div>`;
+    wrap.appendChild(div);
+  });
+  updateStats();
+}
+
+// Events
+document.getElementById("cats").addEventListener("click", e=>{
+  if(isSetup) return;
+  const head = e.target.closest(".cat-head");
+  if(head){
+    const id = head.dataset.cat;
+    const catEl = head.closest(".cat");
+    if(openCats.has(id)){openCats.delete(id);catEl.classList.remove("open")}
+    else{openCats.add(id);catEl.classList.add("open")}
+    return;
+  }
+  const item = e.target.closest(".item");
+  if(item){
+    toggleItem(item.dataset.k, item.dataset.label);
+  }
+});
+
+document.querySelector(".filters").addEventListener("click", e=>{
+  const btn = e.target.closest(".filt-btn");
+  if(!btn) return;
+  document.querySelectorAll(".filt-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  filter = btn.dataset.f;
+  render();
+});
+
+document.getElementById("reset-btn").addEventListener("click", resetAll);
+
+// Init
+if(myName){
+  document.getElementById("name-setup").style.display = "none";
+  document.getElementById("online-bar").style.display = "flex";
+  isSetup = false;
+  startListeners();
+}
+initName();
+render();
+</script>
+</body>
+</html>
